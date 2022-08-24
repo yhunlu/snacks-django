@@ -30,6 +30,7 @@ class Customer(models.Model):
     MEMBERSHIP_CHOICES = [(MEMBERSHIP_BRONZE, 'Bronze'),
                           (MEMBERSHIP_SILVER, 'Silver'), (MEMBERSHIP_GOLD, 'Gold')]
     name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True)
     phone = models.CharField(max_length=255)
