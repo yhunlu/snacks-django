@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-debug-toolbar = "*"
 mysqlclient = "*"
+django-environ = "*"
 
 [dev-packages]
 autopep8 = "*"
