@@ -7,7 +7,7 @@
     {% endif %}
     <ul>
       {% for result in results %}
-      <li>{{ result.title }} - {{ result.collection.title }}</li>
+      <li>{{ result.id }} - {{ result.customer.first_name }}</li>
       {% endfor %}
     </ul>
   </body>
