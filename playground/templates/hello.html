@@ -7,7 +7,7 @@
     {% endif %}
     <ul>
       {% for result in results %}
-      <li>{{ result.title }}</li>
+      <li>{{ result.title }} - {{ result.collection.title }}</li>
       {% endfor %}
     </ul>
   </body>
