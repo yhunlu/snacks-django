@@ -6,6 +6,6 @@ from store.models import Product
 
 
 def say_hello(request):
-    queryset = Product.objects.order_by('unit_price', '-title').reverse()
+    queryset = Product.objects.all()[:5]
 
     return render(request, 'hello.html', {'name': 'yahya', 'results': list(queryset)})
