@@ -6,7 +6,7 @@ from store.models import Product, OrderItem
 
 
 def say_hello(request):
-    # select product which are already ordered.
-    queryset = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
+    # queryset = Product.objects.only('id', 'title')
+    queryset = Product.objects.defer('description')
 
-    return render(request, 'hello.html', {'name': 'yahya', 'results': list(queryset)}) 
+    return render(request, 'hello.html', {'name': 'yahya', 'results': list(queryset)})
