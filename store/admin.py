@@ -25,3 +25,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 admin.site.register(models.Collection)
+
+@admin.register(models.Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'placed_at', 'customer']
