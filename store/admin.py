@@ -1,10 +1,7 @@
 from django.contrib import admin, messages
-from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
-
-from tags.models import TaggedItem
 
 from . import models
 
@@ -44,10 +41,6 @@ class CollectionAdmin(admin.ModelAdmin):
             products_count=Count('product')
         )
 
-class TagInline(GenericTabularInline):
-    autocomplete_fields = ['tag']
-    model = TaggedItem
-
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin): 
     autocomplete_fields = ['collection']
@@ -56,7 +49,6 @@ class ProductAdmin(admin.ModelAdmin):
         'slug': ['title']
     }
     actions = ['clear_inventory']
-    inlines = [TagInline]
     list_display = ['title', 'unit_price',
                     'inventory_status', 'collection_title']
     list_editable = ['unit_price']
