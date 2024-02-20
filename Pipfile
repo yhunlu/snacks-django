@@ -8,6 +8,7 @@ django = "*"
 django-debug-toolbar = "*"
 mysqlclient = "*"
 django-environ = "*"
+djangorestframework = "*"
 
 [dev-packages]
 autopep8 = "*"
