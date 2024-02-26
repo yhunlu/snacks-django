@@ -4,7 +4,7 @@ from . import views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register("products", views.ProductViewSet)
+router.register("products", views.ProductViewSet, basename="products")
 router.register("collections", views.CollectionViewSet)
 
 products_router = routers.NestedDefaultRouter(router, "products", lookup="product")
