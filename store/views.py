@@ -20,7 +20,7 @@ class ReviewViewSet(ModelViewSet):
     def get_serializer_context(self):
         return {"product_id": self.kwargs["product_pk"]}
 
-
+# test
 class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
 
