@@ -16,6 +16,7 @@ from store.pagination import DefaultPagination
 from .filters import ProductFilter
 from .models import Cart, CartItem, Collection, OrderItem, Product, Review
 from .serializers import (
+    CartItemSerializer,
     CartSerializer,
     CollectionSerializer,
     ProductSerializer,
@@ -78,20 +79,12 @@ class CartViewSet(
     serializer_class = CartSerializer
 
 
-# class CartItemViewSet(ModelViewSet):
-#     http_method_names = ['get', 'post', 'patch', 'delete']
+class CartItemViewSet(ModelViewSet):
+    serializer_class = CartItemSerializer
 
-#     # def get_serializer_class(self):
-#     #     if self.request.method == 'POST':
-#     #         return AddCartItemSerializer
-#     #     elif self.request.method == 'PATCH':
-#     #         return UpdateCartItemSerializer
-#     #     return CartItemSerializer
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"]) \
+            .select_related("product")
 
-#     def get_serializer_context(self):
-#         return {'cart_id': self.kwargs['cart_pk']}
-
-#     def get_queryset(self):
-#         return CartItem.objects \
-#                 .filter(cart_id=self.kwargs['cart_pk']) \
-#                 .select_related('product')
+    def get_serializer_context(self):
+        return {"cart_id": self.kwargs["cart_pk"]}
