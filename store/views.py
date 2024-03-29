@@ -82,6 +82,8 @@ class CartViewSet(
 
 
 class CartItemViewSet(ModelViewSet):
+    # in ModelViewSet class already has delete operation
+    # also setted http_method_names for allowed operations
     http_method_names = ['get', 'post', 'patch', 'delete']
     
     def get_serializer_class(self):
