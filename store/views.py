@@ -4,20 +4,30 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   RetrieveModelMixin, UpdateModelMixin)
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from store.pagination import DefaultPagination
 
 from .filters import ProductFilter
-from .models import (Cart, CartItem, Collection, Customer, OrderItem, Product,
-                     Review)
-from .serializers import (AddCartItemSerializer, CartItemSerializer,
-                          CartSerializer, CollectionSerializer,
-                          CustomerSerializer, ProductSerializer,
-                          ReviewSerializer, UpdateCartItemSerializer)
+from .models import Cart, CartItem, Collection, Customer, OrderItem, Product, Review
+from .serializers import (
+    AddCartItemSerializer,
+    CartItemSerializer,
+    CartSerializer,
+    CollectionSerializer,
+    CustomerSerializer,
+    ProductSerializer,
+    ReviewSerializer,
+    UpdateCartItemSerializer,
+)
 
 
 class ProductViewSet(ModelViewSet):
@@ -78,8 +88,8 @@ class CartViewSet(
 class CartItemViewSet(ModelViewSet):
     # in ModelViewSet class already has delete operation
     # also setted http_method_names for allowed operations
-    http_method_names = ['get', 'post', 'patch', 'delete']
-    
+    http_method_names = ["get", "post", "patch", "delete"]
+
     def get_serializer_class(self):
         if self.request.method == "POST":
             return AddCartItemSerializer
@@ -96,28 +106,34 @@ class CartItemViewSet(ModelViewSet):
         return {"cart_id": self.kwargs["cart_pk"]}
 
 
-class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class CustomerViewSet(
+    CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet
+):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
     @action(detail=False, methods=["GET", "PUT"])
     def me(self, request):
         user_id = request.user.id
         if not user_id:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             customer = Customer.objects.get(user_id=user_id)
         except Customer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        if request.method == 'GET':
+
+        if request.method == "GET":
             serializer = CustomerSerializer(customer)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        elif request.method == 'PUT':
+        elif request.method == "PUT":
             serializer = CustomerSerializer(customer, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        
