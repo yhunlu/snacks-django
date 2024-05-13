@@ -64,16 +64,17 @@ class Customer(models.Model):
     def __str__(self) -> str:
         return f"{self.user.first_name} {self.user.last_name}"
 
-    @admin.display(ordering='user__first_name')
+    @admin.display(ordering="user__first_name")
     def first_name(self):
         return self.user.first_name
-    
-    @admin.display(ordering='user__last_name')
+
+    @admin.display(ordering="user__last_name")
     def last_name(self):
         return self.user.last_name
-    
+
     class Meta:
         ordering = ["user__first_name", "user__last_name"]
+        permissions = [("view_history", "Can view history")]
 
 
 class Order(models.Model):
@@ -92,9 +93,8 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
     class Meta:
-        permissions = [
-            ('cancel_order', 'Can cancel order')
-        ]
+        permissions = [("cancel_order", "Can cancel order")]
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(
