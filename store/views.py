@@ -20,7 +20,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from store.pagination import DefaultPagination
-from store.permissions import FullDjangoModelPermissions, IsAdminOrReadOnly
+from store.permissions import (
+    FullDjangoModelPermissions,
+    IsAdminOrReadOnly,
+    ViewCustomerHistoryPermission,
+)
 
 from .filters import ProductFilter
 from .models import Cart, CartItem, Collection, Customer, OrderItem, Product, Review
@@ -119,27 +123,18 @@ class CustomerViewSet(ModelViewSet):
     serializer_class = CustomerSerializer
     permission_classes = [IsAdminUser]
 
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response("OK")
 
     @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])
     def me(self, request):
-        user_id = request.user.id
-        if not user_id:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            customer = Customer.objects.get(user_id=user_id)
-        except Customer.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
+        (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
         if request.method == "GET":
             serializer = CustomerSerializer(customer)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data)
         elif request.method == "PUT":
             serializer = CustomerSerializer(customer, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data)
